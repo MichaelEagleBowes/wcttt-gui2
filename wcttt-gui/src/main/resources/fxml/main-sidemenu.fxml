@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ WCT³ (WIAI Course Timetabling Tool) is a software that strives to automate
+ the timetabling process at the WIAI faculty of the University of Bamberg.
+
+ WCT³-GUI comprises functionality to view generated timetables, edit semester
+ data and to generate new timetables.
+
+ Copyright (C) 2018 Nicolas Gross
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<HBox fx:id="sideMenu" BorderPane.alignment="CENTER" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="wcttt.gui.controller.MainSideMenuController">
+    <children>
+        <VBox HBox.hgrow="ALWAYS">
+            <children>
+                <ToolBar nodeOrientation="RIGHT_TO_LEFT" orientation="VERTICAL" prefWidth="41.0" VBox.vgrow="ALWAYS" />
+            <ToolBar nodeOrientation="RIGHT_TO_LEFT" orientation="VERTICAL" prefHeight="218.0" prefWidth="41.0">
+               <items>
+                  <Group>
+                     <children>
+                        <ToggleButton fx:id="timetablesToggle" mnemonicParsing="false" prefWidth="100.0" rotate="90.0" selected="true" text="Timetables" />
+                     </children>
+                  </Group>
+                  <Group layoutX="10.0" layoutY="25.0">
+                     <children>
+                        <ToggleButton fx:id="filtersToggle" mnemonicParsing="false" prefWidth="100.0" rotate="90.0" selected="true" text="Filters" />
+                     </children>
+                  </Group>
+               </items>
+            </ToolBar>
+            </children>
+        </VBox>
+        <VBox fx:id="sideMenuVBox">
+            <children>
+                <fx:include fx:id="timetables" source="main-timetables.fxml" />
+                <Separator fx:id="sideMenuVBoxSeparator">
+               <VBox.margin>
+                  <Insets bottom="5.0" />
+               </VBox.margin></Separator>
+                <fx:include fx:id="filters" source="main-filters.fxml" />
+            </children>
+            <padding>
+                <Insets top="5.0" />
+            </padding>
+            <HBox.margin>
+                <Insets />
+            </HBox.margin></VBox>
+    </children>
+</HBox>

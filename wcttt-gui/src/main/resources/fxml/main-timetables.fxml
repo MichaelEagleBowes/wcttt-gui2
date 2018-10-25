@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ WCT³ (WIAI Course Timetabling Tool) is a software that strives to automate
+ the timetabling process at the WIAI faculty of the University of Bamberg.
+
+ WCT³-GUI comprises functionality to view generated timetables, edit semester
+ data and to generate new timetables.
+
+ Copyright (C) 2018 Nicolas Gross
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<GridPane fx:id="timetables" prefWidth="300.0" vgap="5.0" VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="wcttt.gui.controller.MainTimetablesController">
+    <columnConstraints>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints />
+        <RowConstraints />
+    </rowConstraints>
+    <children>
+        <Label text="Timetables:" underline="true" />
+      <TableView fx:id="timetableSelectionTable" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
+        <columns>
+          <TableColumn fx:id="timetableColumn" editable="false" prefWidth="220.0" resizable="false" sortable="false" text="Timetable" />
+            <TableColumn fx:id="penaltyColumn" editable="false" prefWidth="78.0" resizable="false" text="Penalty" />
+        </columns>
+      </TableView>
+    </children>
+	<VBox.margin>
+        <Insets bottom="5.0" left="5.0" right="5.0" />
+    </VBox.margin>
+</GridPane>

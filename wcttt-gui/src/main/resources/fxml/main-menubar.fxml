@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ WCT³ (WIAI Course Timetabling Tool) is a software that strives to automate
+ the timetabling process at the WIAI faculty of the University of Bamberg.
+
+ WCT³-GUI comprises functionality to view generated timetables, edit semester
+ data and to generate new timetables.
+
+ Copyright (C) 2018 Nicolas Gross
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.layout.BorderPane?>
+
+<MenuBar BorderPane.alignment="CENTER" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="wcttt.gui.controller.MainMenuBarController">
+    <menus>
+        <Menu mnemonicParsing="false" text="File">
+            <items>
+                <MenuItem fx:id="fileNew" mnemonicParsing="false" text="New" />
+                <MenuItem fx:id="fileOpen" mnemonicParsing="false" text="Open" />
+                <MenuItem fx:id="fileSave" mnemonicParsing="false" text="Save" />
+                <MenuItem fx:id="fileSaveAs" mnemonicParsing="false" text="Save as" />
+                <MenuItem fx:id="fileQuit" mnemonicParsing="false" text="Quit" />
+            </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Edit">
+            <items>
+                <MenuItem fx:id="editSemester" mnemonicParsing="false" text="Semester" />
+                <MenuItem fx:id="editCourses" mnemonicParsing="false" text="Courses" />
+                <MenuItem fx:id="editRooms" mnemonicParsing="false" text="Rooms" />
+                <MenuItem fx:id="editChairs" mnemonicParsing="false" text="Chairs" />
+                <MenuItem fx:id="editCurricula" mnemonicParsing="false" text="Curricula" />
+                <MenuItem fx:id="editGenerate" mnemonicParsing="false" text="Generate timetable" />
+            </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="View">
+            <items>
+                <MenuItem fx:id="viewSessionSession" mnemonicParsing="false" text="Session-session conflicts" />
+                <MenuItem fx:id="viewSessionRoom" mnemonicParsing="false" text="Session-room conflicts" />
+                <MenuItem fx:id="viewTeacherPeriod" mnemonicParsing="false" text="Teacher-period conflicts" />
+            </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Help">
+            <items>
+                <MenuItem fx:id="helpHelp" mnemonicParsing="false" text="Help" />
+                <MenuItem fx:id="helpAbout" mnemonicParsing="false" text="About" />
+            </items>
+        </Menu>
+    </menus>
+</MenuBar>
