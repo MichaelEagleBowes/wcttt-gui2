@@ -73,6 +73,10 @@ public class MainTableController extends SubscriberController<Boolean> {
 		Platform.runLater(this::updateGui);
 		getSubscription().request(1);
 	}
+	
+	public Timetable getSelectedTimetable() {
+		return selectedTimetable;
+	}
 
 	private void updateGui() {
 		createTableViews();

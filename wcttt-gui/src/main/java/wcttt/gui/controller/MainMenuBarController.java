@@ -28,9 +28,11 @@ import javafx.application.HostServices;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.MenuItem;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -43,6 +45,7 @@ import wcttt.lib.model.Semester;
 import wcttt.lib.model.SemesterImpl;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Optional;
 
 /**
@@ -50,6 +53,7 @@ import java.util.Optional;
  */
 public class MainMenuBarController extends Controller {
 
+	private static String VIEW_TEACHERPERIOD_FXML = "/fxml/view-teacher-period.fxml";
 	private static String EDIT_SEMESTER_FXML = "/fxml/edit-semester.fxml";
 	private static String EDIT_COURSES_FXML = "/fxml/edit-courses.fxml";
 	private static String EDIT_ROOMS_FXML = "/fxml/edit-rooms.fxml";
@@ -57,6 +61,15 @@ public class MainMenuBarController extends Controller {
 	private static String EDIT_CURRICULA_FXML = "/fxml/edit-curricula.fxml";
 	private static String EDIT_GENERATE = "/fxml/edit-generate-algorithm.fxml";
 
+	@FXML
+	private MainTimetablesController sessionSessionController;
+	
+	@FXML
+	private MainTimetablesController sessionRoomController;
+	
+	@FXML
+	private ViewTeacherPeriodController teacherPeriodController;
+	
 	@FXML
 	private MenuItem fileNew;
 	@FXML
@@ -194,20 +207,27 @@ public class MainMenuBarController extends Controller {
 	}
 
 	private void initViewMenu() {
-		// TODO implement
+
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/view-teacher-period.fxml"));
+		try {
+			loader.load();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// Get the Controller from the FXMLLoader
+        ViewTeacherPeriodController controller = loader.getController();
+		
 		viewSessionSession.setOnAction(event ->
-				Util.informationAlert("Unimplemented feature",
-						"This feature is not yet implemented."));
+		showFxmlWindow(EDIT_SEMESTER_FXML, "View Session-Session conflicts", 550, 510));
 
 		// TODO implement
 		viewSessionRoom.setOnAction(event ->
-				Util.informationAlert("Unimplemented feature",
-						"This feature is not yet implemented."));
+		showFxmlWindow(EDIT_SEMESTER_FXML, "View Session-Room conflicts", 550, 510));
 
 		// TODO implement
 		viewTeacherPeriod.setOnAction(event ->
-				Util.informationAlert("Unimplemented feature",
-						"This feature is not yet implemented."));
+		showFxmlWindow(VIEW_TEACHERPERIOD_FXML, "View Teacher-Period conflicts", 550, 510));
 	}
 
 	private void initHelpMenu() {
