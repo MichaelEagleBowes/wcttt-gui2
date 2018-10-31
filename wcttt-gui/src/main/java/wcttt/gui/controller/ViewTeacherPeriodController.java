@@ -3,6 +3,7 @@ package wcttt.gui.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -12,6 +13,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import wcttt.gui.WctttGuiException;
 import wcttt.lib.model.Curriculum;
+import wcttt.lib.model.Period;
+import wcttt.lib.model.Teacher;
 import wcttt.lib.model.Timetable;
 import wcttt.lib.model.WctttModelException;
 
@@ -49,13 +52,34 @@ public class ViewTeacherPeriodController extends Controller {
 			generateMatrix();
 		});
 		
-		//table = list.get(0);
 		//table = getMainController().getTimetableTableController().getSelectedTimetable();
 		matrix.add(label3, 1, 1, 1, 1);
 	}
 	
 	private void generateMatrix() {
-		Util.informationAlert("Model", "The Matrix for " + getModel().getName() + " was generated!");
+		//Util.informationAlert("Model", "The Matrix for " + getModel().getName() + " was generated!");
+		Util.informationAlert("Model2", "tt: "+getMainController().getTimetableTableController().getSelectedTimetable());
+		
+		ObservableList<Teacher> teachers = getModel().getTeachers();
+		
+		int x = 0;
+		for(Teacher t : teachers) {
+			Button btn = new Button(t.getName());
+			matrix.add(btn, x, 0);
+			
+			int y = 0;
+			for (Period p : getModel().getPeriods()) {
+				Button btn2 = new Button("D: "+ p.getDay()+" Slot: "+p.getTimeSlot());
+				matrix.add(btn2, 0, y);
+				
+				
+				y++;
+			}
+			
+			x++;
+		}
+		
+		
 	}
 	
 	private void addRows() {

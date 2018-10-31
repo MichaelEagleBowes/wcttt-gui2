@@ -2,6 +2,7 @@ module wcttt.gui {
 	requires javafx.fxml;
 	requires javafx.controls;
 	requires wcttt.lib;
+	requires javafx.base;
 
 	exports wcttt.gui;
 
