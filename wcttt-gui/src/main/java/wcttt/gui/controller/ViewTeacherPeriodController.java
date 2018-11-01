@@ -27,6 +27,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import wcttt.lib.model.Curriculum;
 import wcttt.lib.model.Teacher;
+import wcttt.lib.util.ConflictMatrixCalculator;
 
 public class ViewTeacherPeriodController extends Controller {
 
@@ -75,7 +76,9 @@ public class ViewTeacherPeriodController extends Controller {
 		//Util.informationAlert("Model", "The Matrix for " + getModel().getName() + " was generated!");
 		Util.informationAlert("Model2", "tt: "+getMainController().getTimetableTableController().getSelectedTimetable());
 		
+		ConflictMatrixCalculator calculator = new ConflictMatrixCalculator(getModel().getSemester());
 		ObservableList<Teacher> teachers = getModel().getTeachers();
+		
 		
 		int x = 0;
 		for(Teacher t : teachers) {
