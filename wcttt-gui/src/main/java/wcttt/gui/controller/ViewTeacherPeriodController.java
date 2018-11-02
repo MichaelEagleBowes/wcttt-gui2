@@ -119,6 +119,7 @@ public class ViewTeacherPeriodController extends Controller {
 					conflictType = 0;
 				}
 				Circle circle = drawCircle(conflictType);
+				Tooltip.install(circle, createConflictTooltip(conflictType));
 				matrix.add(circle, x+1, y+1);
 				GridPane.setHalignment(circle, HPos.CENTER);
 				y++;
@@ -165,8 +166,6 @@ public class ViewTeacherPeriodController extends Controller {
 				// event?
 			}
 		});
-
-		Tooltip.install(circle, createConflictTooltip(conflictType));
 
 		return circle;
 	}

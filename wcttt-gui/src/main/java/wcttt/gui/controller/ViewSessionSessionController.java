@@ -1,19 +1,15 @@
 package wcttt.gui.controller;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -52,9 +48,6 @@ public class ViewSessionSessionController extends Controller {
 	@FXML
 	private TextField yAxisName;
 	
-	private Map <Integer, String>days = new HashMap<Integer, String>();
-	private Map <Integer, String>timeslots = new HashMap<Integer, String>();
-	
 	@FXML
 	protected void initialize() {
 		
@@ -66,18 +59,6 @@ public class ViewSessionSessionController extends Controller {
 		genButton.setOnAction(event -> {
 			generateMatrix();
 		});
-		
-		days.put(1, "Mo");
-		days.put(2, "Di");
-		days.put(3, "Mi");
-		days.put(4, "Do");
-		days.put(5, "Fr");
-		timeslots.put(1, "8:15 - 9:45");
-		timeslots.put(2, "10:15 - 11:45");
-		timeslots.put(3, "12:15 - 13:45");
-		timeslots.put(4, "14:15 - 15:45");
-		timeslots.put(5, "16:15 - 17:45");
-		timeslots.put(6, "18:15 - 19:45");
 	}
 	
 	private List<Session> getSessions(){
@@ -190,13 +171,16 @@ public class ViewSessionSessionController extends Controller {
 		for (Curriculum c : conflict.getCurricula()) {
 			curricula = curricula+c.getName()+"\n";
 		}
-		String str = session.getName() + " - " + otherSession.getName()+"\n"
-		+"Same lecturers: "+conflict.isTeacherConflict()+"\n"
+		
+		String str = session.getName() + " - " + otherSession.getName()
+		+"\n"+"Same lecturers: "+conflict.isTeacherConflict()+"\n"
 		+"Same Course: "+conflict.isSessionConflict()+"\n"
 		+"Curricula: "+"\n"+curricula;
 		tip.setText(str);
 		tip.prefWidth(100);
 		tip.setWrapText(true);
+		tip.setHideOnEscape(true);
+		tip.setStyle("-fx-background-color: linear-gradient(#E4EAA2, #9CD672);");
 		
 		return tip;
 	}
