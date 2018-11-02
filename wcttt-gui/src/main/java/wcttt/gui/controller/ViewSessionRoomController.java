@@ -117,7 +117,13 @@ public class ViewSessionRoomController extends Controller {
 						conflict.setFullfillsFeatures(true);
 					}
 					
-					Circle circle = drawCircle(conflictType);
+					if(!conflict.fullfillsFeatures() | conflict.getCapacityDeviation()<0) {
+						conflictType = 2;
+					} else if (conflict.getCapacityDeviation()>20) {
+						conflictType = 1;
+					}
+					
+					Circle circle = drawCircle(conflictType, conflict);
 					Tooltip.install(circle, createConflictTooltip(room, session, conflict));
 					matrix.add(circle, x+1, y+1);
 					GridPane.setHalignment(circle, HPos.CENTER);
@@ -132,9 +138,9 @@ public class ViewSessionRoomController extends Controller {
 	 * @param conflictType
 	 * @return
 	 */
-	private Circle drawCircle(int conflictType) {
+	private Circle drawCircle(int conflictType, SessionRoomConflict conflict) {
 		Circle circle = new Circle();
-		circle.setFill(getConflictColor(conflictType));
+		circle.setFill(getConflictColor(conflictType, conflict));
 		circle.setRadius(25);
 		circle.setCenterX(0);
 		circle.setCenterY(0);
@@ -154,13 +160,13 @@ public class ViewSessionRoomController extends Controller {
 		String deviationText;
 		int deviation = conflict.getCapacityDeviation();
 		if(deviation<0) {
-			deviationText = "Capacity: "+deviation+" slots missing";
+			deviationText = "Capacity: "+Math.abs(deviation)+" slots missing";
 		} else {
-			deviationText = "Capacity: "+deviation+" slots unused";
+			deviationText = "Capacity: "+Math.abs(deviation)+" slots unused";
 		}
 		
 		String str = room.getName() + " - " + session.getName()+"\n"
-		+"Same lecturers: "+conflict.fullfillsFeatures()+"\n"
+		+"Fulfills Features: "+conflict.fullfillsFeatures()+"\n"
 		+deviationText;
 		tip.setText(str);
 		tip.prefWidth(100);
@@ -178,8 +184,9 @@ public class ViewSessionRoomController extends Controller {
 	 * @param conflict
 	 * @return
 	 */
-	private Paint getConflictColor(int conflictType) {
-		Color color = null;
+	private Paint getConflictColor(int conflictType, SessionRoomConflict conflict) {
+		Color color = Color.WHITE;
+		double t = 1 / conflict.getCapacityDeviation();
 		switch(conflictType) {
 		case 0:
 			color = Color.WHITE;
