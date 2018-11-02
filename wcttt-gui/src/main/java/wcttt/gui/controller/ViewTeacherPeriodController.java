@@ -1,18 +1,13 @@
 package wcttt.gui.controller;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
-import javafx.scene.Group;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.input.MouseEvent;
@@ -21,21 +16,13 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.RowConstraints;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
-import wcttt.lib.model.Curriculum;
 import wcttt.lib.model.Period;
 import wcttt.lib.model.Teacher;
-import wcttt.lib.util.ConflictMatrixCalculator;
 
 /**
  * 
@@ -63,11 +50,8 @@ public class ViewTeacherPeriodController extends Controller {
 	@FXML
 	private TextField yAxisName;
 	
-	@FXML
-	private ListView<Curriculum> conflictListView;
-	
-	Map <Integer, String>days = new <Integer, String>HashMap();
-	Map <Integer, String>timeslots = new <Integer, String>HashMap();
+	private Map <Integer, String>days = new HashMap<Integer, String>();
+	private Map <Integer, String>timeslots = new HashMap<Integer, String>();
 	
 	@FXML
 	protected void initialize() {
@@ -76,6 +60,7 @@ public class ViewTeacherPeriodController extends Controller {
 		scroll.setVbarPolicy(ScrollBarPolicy.ALWAYS);
 		scroll.setHbarPolicy(ScrollBarPolicy.ALWAYS);
 		rootPane.setCenter(scroll);
+		
 		genButton.setOnAction(event -> {
 			generateMatrix();
 		});
@@ -94,9 +79,7 @@ public class ViewTeacherPeriodController extends Controller {
 	}
 	
 	private void generateMatrix() {
-		Util.informationAlert("Model2", "tt: "+getMainController().getTimetableTableController().getSelectedTimetable());
-		
-		ConflictMatrixCalculator calculator = new ConflictMatrixCalculator(getModel().getSemester());
+		//ConflictMatrixCalculator calculator = new ConflictMatrixCalculator(getModel().getSemester());
 		ObservableList<Teacher> teachers = getModel().getTeachers();
 		
 		
@@ -188,6 +171,11 @@ public class ViewTeacherPeriodController extends Controller {
 		return circle;
 	}
 	
+	/**
+	 * Creates tooltip for hover over the conflict circles.
+	 * @param conflictType
+	 * @return
+	 */
 	private Tooltip createConflictTooltip(int conflictType) {
 		Tooltip tip = null;
 		switch(conflictType) {

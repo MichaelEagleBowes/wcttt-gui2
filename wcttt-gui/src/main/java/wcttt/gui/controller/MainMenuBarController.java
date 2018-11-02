@@ -53,6 +53,8 @@ import java.util.Optional;
  */
 public class MainMenuBarController extends Controller {
 
+	private static String VIEW_SESSIONSESSION_FXML = "/fxml/view-session-session.fxml";
+	private static String VIEW_SESSIONROOM_FXML = "/fxml/view-session-room.fxml";
 	private static String VIEW_TEACHERPERIOD_FXML = "/fxml/view-teacher-period.fxml";
 	private static String EDIT_SEMESTER_FXML = "/fxml/edit-semester.fxml";
 	private static String EDIT_COURSES_FXML = "/fxml/edit-courses.fxml";
@@ -207,23 +209,13 @@ public class MainMenuBarController extends Controller {
 	}
 
 	private void initViewMenu() {
-
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/view-teacher-period.fxml"));
-		try {
-			loader.load();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		// Get the Controller from the FXMLLoader
-        ViewTeacherPeriodController controller = loader.getController();
 		
 		viewSessionSession.setOnAction(event ->
-		showFxmlWindow(EDIT_SEMESTER_FXML, "View Session-Session conflicts", 550, 510));
+		showFxmlWindow(VIEW_SESSIONSESSION_FXML, "View Session-Session conflicts", 550, 510));
 
 		// TODO implement
 		viewSessionRoom.setOnAction(event ->
-		showFxmlWindow(EDIT_SEMESTER_FXML, "View Session-Room conflicts", 550, 510));
+		showFxmlWindow(VIEW_SESSIONROOM_FXML, "View Session-Room conflicts", 550, 510));
 
 		// TODO implement
 		viewTeacherPeriod.setOnAction(event ->
