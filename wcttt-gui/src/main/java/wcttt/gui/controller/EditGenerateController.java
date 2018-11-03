@@ -53,7 +53,7 @@ public class EditGenerateController extends Controller {
 			"/fxml/edit-generate-parameters.fxml";
 	private static String EDIT_GENERATE_RUNNING =
 			"/fxml/edit-generate-running.fxml";
-
+	
 	// Algorithm selection window
 	@FXML
 	private ChoiceBox<Algorithm> algorithmChoiceBox;
@@ -78,7 +78,8 @@ public class EditGenerateController extends Controller {
 
 	private AtomicBoolean foundFeasibleSolution = new AtomicBoolean(false);
 	private Thread algorithmThread;
-
+	@FXML
+	private Label runningText;
 
 	@FXML
 	protected void initialize() {
@@ -99,6 +100,7 @@ public class EditGenerateController extends Controller {
 	}
 
 	private void initializeRunningWindow() {
+		runningText.setText("Timetable is being generated...");
 		progressBar.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS);
 		progressBar.prefWidthProperty().bind(getStage().widthProperty().
 				subtract(25));
