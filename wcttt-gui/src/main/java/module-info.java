@@ -4,6 +4,7 @@ module wcttt.gui {
 	requires wcttt.lib;
 	requires javafx.base;
 	requires javafx.graphics;
+	requires java.desktop;
 
 	exports wcttt.gui;
 

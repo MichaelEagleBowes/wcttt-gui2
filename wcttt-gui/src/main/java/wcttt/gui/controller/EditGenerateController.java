@@ -38,6 +38,8 @@ import wcttt.lib.algorithms.tabu_based_memetic_approach.TabuBasedMemeticApproach
 import wcttt.lib.model.Timetable;
 import wcttt.lib.model.WctttModelException;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -200,8 +202,9 @@ public class EditGenerateController extends Controller {
 	}
 
 	private void runAlgorithm() {
+		showRunningWindow();
 		Runnable algorithmRunnable = () -> {
-			try {
+			try {				
 				Timetable timetable = selectedAlgorithm.generate();
 				if (timetable != null) {
 					foundFeasibleSolution.set(true);
@@ -221,8 +224,7 @@ public class EditGenerateController extends Controller {
 		algorithmThread.start();
 		Runnable finalizeRunnable = this::finalizeAlgorithmThread;
 		Thread finalizeThread = new Thread(finalizeRunnable);
-		finalizeThread.start();
-		showRunningWindow();
+		finalizeThread.start();		
 	}
 
 	private void showRunningWindow() {
@@ -230,6 +232,17 @@ public class EditGenerateController extends Controller {
 				getModel(), getMainController());
 		initializeRunningWindow();
 		Util.showStage(stage, "Algorithm running", 420, 160);
+		//Set the text of the window
+		selectedAlgorithm.addChangeListener(new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				String text = (String) evt.getNewValue();
+				if(text != null) {
+					Platform.runLater(() -> runningText.setText(text));							
+				}
+			}
+			
+		});
 	}
 
 	private void finalizeAlgorithmThread() {
