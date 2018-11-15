@@ -30,9 +30,12 @@ import wcttt.gui.model.Model;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
@@ -54,6 +57,8 @@ public class MainTableController extends SubscriberController<Boolean> {
 
 	private List<TableView<TimetablePeriod>> timetableDays = new ArrayList<>();
 	private Timetable selectedTimetable = null;
+	private ObservableList<TablePosition> selectedCells = null;
+	private Object selectedCellData = null;
 	private Teacher teacherFilter = null;
 	private Chair chairFilter = null;
 	private Course courseFilter = null;
@@ -97,7 +102,7 @@ public class MainTableController extends SubscriberController<Boolean> {
 			tableView.setPrefHeight(196);
 			tableView.setEditable(false);
 			tableView.setPlaceholder(new Label("No timetable selected"));
-			tableView.setSelectionModel(null);
+			tableView.getSelectionModel().setCellSelectionEnabled(true);
 
 			TableColumn<TimetablePeriod, String> tableColumn =
 					new TableColumn<>();
@@ -105,6 +110,17 @@ public class MainTableController extends SubscriberController<Boolean> {
 			tableColumn.setSortable(false);
 			tableColumn.setPrefWidth(100.0);
 			tableView.getColumns().add(tableColumn);
+			
+			selectedCells = tableView.getSelectionModel().getSelectedCells() ;
+			selectedCells.addListener((ListChangeListener.Change<? extends TablePosition> change) -> {
+			    if (selectedCells.size() > 0) {
+			        TablePosition selectedCell = selectedCells.get(0);
+			        TableColumn column = selectedCell.getTableColumn();
+			        int rowIndex = selectedCell.getRow();
+			        selectedCellData = column.getCellObservableValue(rowIndex).getValue();
+			    }
+			});
+			
 			timetableDays.add(tableView);
 		}
 	}
