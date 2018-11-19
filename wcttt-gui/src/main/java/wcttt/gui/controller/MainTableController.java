@@ -32,17 +32,24 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DataFormat;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import wcttt.lib.model.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -58,16 +65,15 @@ public class MainTableController extends SubscriberController<Boolean> {
 	private List<TableView<TimetablePeriod>> timetableDays = new ArrayList<>();
 	private Timetable selectedTimetable = null;
 	private ObservableList<TablePosition> selectedCells = null;
-	private Object selectedCellData = null;
+	private String selectedCellData = null;
+	private TablePosition selectedCell = null;
 	private Teacher teacherFilter = null;
 	private Chair chairFilter = null;
 	private Course courseFilter = null;
 	private Curriculum curriculumFilter = null;
 
-
 	@Override
-	public void setup(Stage stage, HostServices hostServices,
-	                  MainController mainController, Model model) {
+	public void setup(Stage stage, HostServices hostServices, MainController mainController, Model model) {
 		super.setup(stage, hostServices, mainController, model);
 		model.subscribeSemesterChanges(this);
 		Platform.runLater(this::updateGui);
@@ -78,7 +84,7 @@ public class MainTableController extends SubscriberController<Boolean> {
 		Platform.runLater(this::updateGui);
 		getSubscription().request(1);
 	}
-	
+
 	public Timetable getSelectedTimetable() {
 		return selectedTimetable;
 	}
@@ -94,6 +100,29 @@ public class MainTableController extends SubscriberController<Boolean> {
 		}
 	}
 
+	private int getSelectedCellIndex(TimetablePeriod period) {
+		int index = selectedCell.getColumn();
+		System.out.println("Column " + index);
+
+		// int roomCount = getModel().getInternalRooms().size() +
+		// getModel().getExternalRooms().size();
+		// for (int m = 0;m<roomCount;m++) {
+		for (int i = 0; i <= index; i++) {
+
+			// if (period.getAssignments().get(i).getSession() == null) {
+			// index--;
+			// }
+			// if(index != i) {
+			// index = 0;
+			// }
+		}
+		// }
+
+		System.out.println("Index " + index);
+
+		return index;
+	}
+
 	private void createTableViews() {
 		timetableDays.clear();
 		for (int i = 0; i < getModel().getDaysPerWeek(); i++) {
@@ -104,23 +133,54 @@ public class MainTableController extends SubscriberController<Boolean> {
 			tableView.setPlaceholder(new Label("No timetable selected"));
 			tableView.getSelectionModel().setCellSelectionEnabled(true);
 
-			TableColumn<TimetablePeriod, String> tableColumn =
-					new TableColumn<>();
+			TableColumn<TimetablePeriod, String> tableColumn = new TableColumn<>();
 			tableColumn.setResizable(false);
 			tableColumn.setSortable(false);
 			tableColumn.setPrefWidth(100.0);
 			tableView.getColumns().add(tableColumn);
-			
-			selectedCells = tableView.getSelectionModel().getSelectedCells() ;
-			selectedCells.addListener((ListChangeListener.Change<? extends TablePosition> change) -> {
-			    if (selectedCells.size() > 0) {
-			        TablePosition selectedCell = selectedCells.get(0);
-			        TableColumn column = selectedCell.getTableColumn();
-			        int rowIndex = selectedCell.getRow();
-			        selectedCellData = column.getCellObservableValue(rowIndex).getValue();
-			    }
+
+			// Handles the individual Cells in the tableViews
+			tableView.setOnMouseEntered(new EventHandler<MouseEvent>() {
+				@Override
+				public void handle(MouseEvent mouseEvent) {
+					selectedCells = tableView.getSelectionModel().getSelectedCells();
+					selectedCells.addListener((ListChangeListener.Change<? extends TablePosition> change) -> {
+						if (selectedCells.size() > 0) {
+							selectedCell = selectedCells.get(0);
+							TableColumn column = selectedCell.getTableColumn();
+							int rowIndex = selectedCell.getRow();
+							selectedCellData = (String) column.getCellObservableValue(rowIndex).getValue();
+						}
+					});
+					mouseEvent.consume();
+				}
 			});
-			
+
+			// selectedCells = tableView.getSelectionModel().getSelectedCells();
+
+			tableView.setOnDragDetected(new EventHandler<MouseEvent>() {
+				public void handle(MouseEvent event) {
+					Dragboard db = tableView.startDragAndDrop(TransferMode.ANY);
+
+					ClipboardContent content = new ClipboardContent();
+					// Object cellData = tableView.getSelectionModel().getSelectedItem();
+					// String dragTxt;
+
+					// dragTxt = ((TimetablePeriod)cellData).getAssignments().
+					// get(getSelectedCellIndex((TimetablePeriod)cellData)).getSession().toString();
+					content.putString(selectedCellData);
+					if (selectedCellData == "") {
+						System.err.println("The selected cell contains no data.");
+					} else {
+						System.out.println("You are dragging " + selectedCellData);
+					}
+
+					db.setContent(content);
+
+					event.consume();
+				}
+			});
+
 			timetableDays.add(tableView);
 		}
 	}
@@ -129,13 +189,11 @@ public class MainTableController extends SubscriberController<Boolean> {
 		for (int i = 0; i < getModel().getDaysPerWeek(); i++) {
 			TableView<TimetablePeriod> tableView = timetableDays.get(i);
 			@SuppressWarnings("unchecked")
-			TableColumn<TimetablePeriod, String> periodColumn =
-					(TableColumn<TimetablePeriod, String>) tableView.
-							getColumns().get(0);
+			TableColumn<TimetablePeriod, String> periodColumn = (TableColumn<TimetablePeriod, String>) tableView
+					.getColumns().get(0);
 			periodColumn.setText(Period.WEEK_DAY_NAMES[i]);
-			periodColumn.setCellValueFactory(param ->
-					new SimpleStringProperty(Period.TIME_SLOT_NAMES[
-							param.getValue().getTimeSlot() - 1]));
+			periodColumn.setCellValueFactory(
+					param -> new SimpleStringProperty(Period.TIME_SLOT_NAMES[param.getValue().getTimeSlot() - 1]));
 			periodColumn.setReorderable(false);
 		}
 	}
@@ -143,20 +201,16 @@ public class MainTableController extends SubscriberController<Boolean> {
 	private void createRoomColumns(List<? extends Room> rooms) {
 		for (Room room : rooms) {
 			for (TableView<TimetablePeriod> tableView : timetableDays) {
-				TableColumn<TimetablePeriod, String> tableColumn =
-						new TableColumn<>();
+				TableColumn<TimetablePeriod, String> tableColumn = new TableColumn<>();
 				tableColumn.setText(room.getName());
 				tableColumn.setId(room.getId());
 				tableColumn.setResizable(false);
 				tableColumn.setSortable(false);
 				tableColumn.setPrefWidth(150.0);
 				tableColumn.setCellValueFactory(param -> {
-					for (TimetableAssignment assignment : param.getValue().
-							getAssignments()) {
-						if (assignment.getRoom().getId().equals(
-										param.getTableColumn().getId())) {
-							return new SimpleStringProperty(
-									assignment.getSession().toString());
+					for (TimetableAssignment assignment : param.getValue().getAssignments()) {
+						if (assignment.getRoom().getId().equals(param.getTableColumn().getId())) {
+							return new SimpleStringProperty(assignment.getSession().toString());
 						}
 					}
 					return new SimpleStringProperty("");
@@ -167,12 +221,10 @@ public class MainTableController extends SubscriberController<Boolean> {
 	}
 
 	private boolean filtersActive() {
-		return teacherFilter != null || chairFilter != null ||
-				courseFilter != null || curriculumFilter != null;
+		return teacherFilter != null || chairFilter != null || courseFilter != null || curriculumFilter != null;
 	}
 
-	private void updateSelectedFilters(Teacher teacher, Chair chair,
-	                                   Course course, Curriculum curriculum) {
+	private void updateSelectedFilters(Teacher teacher, Chair chair, Course course, Curriculum curriculum) {
 		teacherFilter = teacher;
 		chairFilter = chair;
 		courseFilter = course;
@@ -182,8 +234,7 @@ public class MainTableController extends SubscriberController<Boolean> {
 	void setTimetable(Timetable timetable) {
 		selectedTimetable = timetable;
 		if (filtersActive() && selectedTimetable != null) {
-			filter(teacherFilter, chairFilter, courseFilter,
-					curriculumFilter);
+			filter(teacherFilter, chairFilter, courseFilter, curriculumFilter);
 		} else {
 			setTableData(timetable);
 		}
@@ -197,18 +248,16 @@ public class MainTableController extends SubscriberController<Boolean> {
 				}
 			} else {
 				for (int i = 0; i < getModel().getDaysPerWeek(); i++) {
-					timetableDays.get(i).setItems(
-							timetable.getDays().get(i).getPeriods());
+					timetableDays.get(i).setItems(timetable.getDays().get(i).getPeriods());
 				}
 			}
 		});
 	}
 
-	void filter(Teacher teacher, Chair chair, Course course,
-	            Curriculum curriculum) {
+	void filter(Teacher teacher, Chair chair, Course course, Curriculum curriculum) {
 		updateSelectedFilters(teacher, chair, course, curriculum);
 		if (selectedTimetable != null) {
-			if (!filtersActive()){
+			if (!filtersActive()) {
 				setTableData(selectedTimetable);
 			} else {
 				setTableData(createFilteredTimetable());
@@ -222,22 +271,20 @@ public class MainTableController extends SubscriberController<Boolean> {
 			try {
 				TimetableDay filteredDay = new TimetableDay(originalDay.getDay());
 				for (TimetablePeriod originalPeriod : originalDay.getPeriods()) {
-					TimetablePeriod filteredPeriod = new TimetablePeriod(
-							originalPeriod.getDay(), originalPeriod.getTimeSlot());
+					TimetablePeriod filteredPeriod = new TimetablePeriod(originalPeriod.getDay(),
+							originalPeriod.getTimeSlot());
 					addFilteredAssignments(originalPeriod, filteredPeriod);
 					filteredDay.addPeriod(filteredPeriod);
 				}
 				filteredTimetable.addDay(filteredDay);
 			} catch (WctttModelException e) {
-				throw new WctttGuiFatalException(
-						"Implementation error in day/time slot numbering", e);
+				throw new WctttGuiFatalException("Implementation error in day/time slot numbering", e);
 			}
 		}
 		return filteredTimetable;
 	}
 
-	private void addFilteredAssignments(TimetablePeriod original,
-	                                    TimetablePeriod filtered) {
+	private void addFilteredAssignments(TimetablePeriod original, TimetablePeriod filtered) {
 		Predicate<TimetableAssignment> teacherCheck = t -> {
 			if (teacherFilter != null) {
 				return t.getSession().getTeacher().equals(teacherFilter);
@@ -271,10 +318,10 @@ public class MainTableController extends SubscriberController<Boolean> {
 				return true;
 			}
 		};
-		Predicate<TimetableAssignment> combinedFilter = teacherCheck.and(
-				chairCheck.and(courseCheck.and(curriculumCheck)));
+		Predicate<TimetableAssignment> combinedFilter = teacherCheck
+				.and(chairCheck.and(courseCheck.and(curriculumCheck)));
 
-		filtered.getAssignments().setAll(original.getAssignments().stream().
-				filter(combinedFilter).collect(Collectors.toList()));
+		filtered.getAssignments()
+				.setAll(original.getAssignments().stream().filter(combinedFilter).collect(Collectors.toList()));
 	}
 }
