@@ -23,6 +23,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import wcttt.gui.model.Model;
+import wcttt.lib.model.Room;
 import wcttt.lib.model.TimetableAssignment;
 
 public class MainConstraintsController extends Controller {
@@ -43,33 +44,28 @@ public class MainConstraintsController extends Controller {
 	@FXML
 	protected void initialize() {
 		view = new ListView<String>();
-		vbox.setPrefWidth(200);
+		vbox.setPrefWidth(300);
 		vbox.setPrefHeight(70);
-		assgnmtList = FXCollections.observableArrayList ("None");
+		assgnmtList = FXCollections.observableArrayList ("Select session to swap");
 		view.setItems(assgnmtList);
 		vbox.getChildren().add(view);
 		
 		vbox.setOnDragDropped(new EventHandler<DragEvent>() {
 		    @Override
 			public void handle(DragEvent event) {
-		        /* data dropped */
-		        /* if there is a string data on dragboard, read it and use it */
 		        Dragboard db = event.getDragboard();
 		        boolean success = false;
 		        if (db.hasString()) {
 		        	//add text to textfield
 		           success = true;
 		        }
-		        /* let the source know whether the string was successfully 
-		         * transferred and used */
 		        event.setDropCompleted(success);
-		        
 		        event.consume();
 		     }
 		});
 
         /*
-        listView.setCellFactory(new Callback<ListView<String>, javafx.scene.control.ListCell<String>>()
+        view.setCellFactory(new Callback<ListView<String>, javafx.scene.control.ListCell<String>>()
         {
             @Override
             public ListCell<String> call(ListView<String> listView)
@@ -97,18 +93,68 @@ public class MainConstraintsController extends Controller {
 	/**
 	 * Adds an assignment's data for the purpose of swapping them with another assignment.
 	 * In case the assignment list is full (max. 2), the assignment that was added first is swapped out.
+	 * @param day - the day that the selected assignment is in.
+	 * @param timeslot - the timeslot within the day, consisting of 2 hours
+	 * @param room - the room that the course is held in
+	 * @s - String containing the name of the course
 	 */
-	public void updateListView(String s) {
-		//view.setItems(assgnmtList);
+	public void updateListView(int day, int timeslot, Room room, String s) {
+
+		String dayString = "";
+		switch(day) {
+		case 0:
+			dayString = "Mon";
+			break;
+		case 1:
+			dayString = "Di";
+			break;
+		case 2:
+			dayString = "Mi";
+			break;
+		case 3:
+			dayString = "Do";
+			break;
+		case 4:
+			dayString = "Fr";
+			break;
+		}
+		String slotString = "";
+		switch(timeslot) {
+		case 0:
+			slotString = "8:00";
+			break;
+		case 1:
+			slotString = "10:00";
+			break;
+		case 2:
+			slotString = "12:00";
+			break;
+		case 3:
+			slotString = "14:00";
+			break;
+		case 4:
+			slotString = "16:00";
+			break;
+		case 5:
+			slotString = "18:00";
+			break;
+		}
 		
+		String assgnmtTxt = dayString + ", " + slotString + ", " + s +", " + room.getName();
+		
+		System.out.println(room.getName());
 		
 		if(assgnmtList.size()==2) {
 			assgnmtList.remove(0);
-			assgnmtList.add(s);
+			assgnmtList.add(assgnmtTxt);
 		} else {
-			assgnmtList.add(s);
+			assgnmtList.add(assgnmtTxt);
 		}
 		
+	}
+	
+	public void clearListView() {
+		view.getItems().clear();
 	}
 
 	private void updateGui() {

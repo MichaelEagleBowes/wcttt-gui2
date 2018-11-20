@@ -65,6 +65,7 @@ public class MainTableController extends SubscriberController<Boolean> {
 	private List<TableView<TimetablePeriod>> timetableDays = new ArrayList<>();
 	private Timetable selectedTimetable = null;
 	private ObservableList<TablePosition> selectedCells = null;
+	private TableView selectedTableView = null;
 	private String selectedCellData = null;
 	private TablePosition selectedCell = null;
 	private Teacher teacherFilter = null;
@@ -129,13 +130,45 @@ public class MainTableController extends SubscriberController<Boolean> {
 				
 				void sendDataToConstraintController(){
 					if(selectedData != null) {
-						System.out.println("selected: "+selectedCellData);
-						getMainController().getSideMenuController().getConstraintsController().updateListView(selectedCellData);
+						int row = selectedCell.getRow();
+						int col = selectedCell.getColumn();
+						System.out.println("selected: "+selectedCellData + "col: " +col);
+						
+						int day = 0;
+						for(int k = 0; k<timetableDays.size();k++) {
+							if(timetableDays.get(k).equals(selectedTableView)) {
+								day = k;
+							};
+						}
+						System.out.println("Day"+day);
+						
+						//get selected period
+						String s = Period.TIME_SLOT_NAMES[row];
+						System.out.println(s);
+						
+						//get selected room
+						ObservableList<? extends Room> inRooms = getModel().getInternalRooms();
+						ObservableList<? extends Room> exRooms = getModel().getExternalRooms();
+						Room selectedRoom;
+						if(col > inRooms.size()) {
+							col = col-inRooms.size();
+							selectedRoom = exRooms.get(col-1);
+						} else {
+							if(col == 0) {
+								selectedRoom = inRooms.get(col);
+							} else {
+								selectedRoom = inRooms.get(col-1);
+							}
+						}
+						
+						System.out.println(selectedCell.getRow());
+						getMainController().getSideMenuController().getConstraintsController().updateListView(day, row, selectedRoom, selectedCellData);
 					}
 				}
 				
 				@Override
 				public void handle(MouseEvent mouseEvent) {
+					selectedTableView = tableView;
 					selectedCells = tableView.getSelectionModel().getSelectedCells();
 					if(selectedCells != null) {
 							if (selectedCells.size() > 0) {
@@ -256,6 +289,7 @@ public class MainTableController extends SubscriberController<Boolean> {
 		} else {
 			setTableData(timetable);
 		}
+		getMainController().getSideMenuController().getConstraintsController().clearListView();
 	}
 
 	private void setTableData(Timetable timetable) {

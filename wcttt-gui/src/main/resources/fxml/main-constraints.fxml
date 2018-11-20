@@ -21,7 +21,7 @@
             <RowConstraints />
           </rowConstraints>
           <children>
-              <Label text="Constraint Violations:" underline="true" GridPane.rowIndex="1"/>
+              <Label text="Swap Sessions:" underline="true" GridPane.rowIndex="1"/>
 			  <VBox fx:id="vbox" GridPane.rowIndex="2" />
 			  <Button fx:id="swapButton" mnemonicParsing="false" prefWidth="80.0" text="Swap" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
               <Button fx:id="violationsButton" mnemonicParsing="false" prefWidth="120.0" text="Show Penalties" GridPane.halignment="CENTER" GridPane.rowIndex="4" />
