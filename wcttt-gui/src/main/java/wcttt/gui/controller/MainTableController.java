@@ -253,6 +253,7 @@ public class MainTableController extends SubscriberController<Boolean> {
 				tableColumn.setId(room.getId());
 				tableColumn.setResizable(false);
 				tableColumn.setSortable(false);
+				tableColumn.setReorderable(false);
 				tableColumn.setPrefWidth(150.0);
 				
 				tableColumn.setCellValueFactory(new PropertyValueFactory<>("default"));
