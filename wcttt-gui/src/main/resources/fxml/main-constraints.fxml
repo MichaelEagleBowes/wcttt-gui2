@@ -25,12 +25,13 @@
 
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Button?>
 
 
-<ScrollPane xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="wcttt.gui.controller.MainTableController">
+<ScrollPane xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="wcttt.gui.controller.MainConstraintsController">
    <content>
-   <VBox fx:id="box" fillWidth="false" />
-   <VBox fx:id="timetableDaysVBox" fillWidth="false" />
+	<VBox fx:id="dropBox" fillWidth="false" />
+	<Button fx:id="swapButton" mnemonicParsing="false" prefWidth="80.0" text="Swap" textFill="#c90000" />
+    <Button fx:id="violationsButton" mnemonicParsing="false" prefWidth="80.0" text="Show Penalty" />
    </content>
 </ScrollPane>

@@ -32,20 +32,31 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DataFormat;
+import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import wcttt.lib.model.*;
 
 import java.util.ArrayList;
@@ -60,9 +71,13 @@ import java.util.stream.Collectors;
 public class MainTableController extends SubscriberController<Boolean> {
 
 	@FXML
+	private VBox box;
+	
+	@FXML
 	private VBox timetableDaysVBox;
 
 	private List<TableView<TimetablePeriod>> timetableDays = new ArrayList<>();
+	private List<Text> violations = new ArrayList<>();
 	private Timetable selectedTimetable = null;
 	private ObservableList<TablePosition> selectedCells = null;
 	private String selectedCellData = null;
@@ -91,7 +106,17 @@ public class MainTableController extends SubscriberController<Boolean> {
 
 	private void updateGui() {
 		createTableViews();
+		Button swapButton = new Button("Swap"); // swaps 2 assignments
+		Button violationsButton = new Button("Show Penalty"); // shows the penalty change from constraint violations if switched
+		box.setVgrow(swapButton, Priority.ALWAYS);
+	    box.setVgrow(violationsButton, Priority.ALWAYS);
+	    swapButton.setMaxWidth(Double.MAX_VALUE);
+	    violationsButton.setMaxWidth(Double.MAX_VALUE);
+		//Text assgnmt1, assgnmt2;
+		box.getChildren().addAll(swapButton, violationsButton);
+		//box.getChildren().setAll(violations);
 		timetableDaysVBox.getChildren().setAll(timetableDays);
+		timetableDaysVBox.getChildren().add(swapButton);
 		createPeriodColumns();
 		createRoomColumns(getModel().getInternalRooms());
 		createRoomColumns(getModel().getExternalRooms());
@@ -99,29 +124,8 @@ public class MainTableController extends SubscriberController<Boolean> {
 			setTimetable(selectedTimetable);
 		}
 	}
-
-	private int getSelectedCellIndex(TimetablePeriod period) {
-		int index = selectedCell.getColumn();
-		System.out.println("Column " + index);
-
-		// int roomCount = getModel().getInternalRooms().size() +
-		// getModel().getExternalRooms().size();
-		// for (int m = 0;m<roomCount;m++) {
-		for (int i = 0; i <= index; i++) {
-
-			// if (period.getAssignments().get(i).getSession() == null) {
-			// index--;
-			// }
-			// if(index != i) {
-			// index = 0;
-			// }
-		}
-		// }
-
-		System.out.println("Index " + index);
-
-		return index;
-	}
+	
+	
 
 	private void createTableViews() {
 		timetableDays.clear();
@@ -132,6 +136,7 @@ public class MainTableController extends SubscriberController<Boolean> {
 			tableView.setEditable(false);
 			tableView.setPlaceholder(new Label("No timetable selected"));
 			tableView.getSelectionModel().setCellSelectionEnabled(true);
+			tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
 			TableColumn<TimetablePeriod, String> tableColumn = new TableColumn<>();
 			tableColumn.setResizable(false);
@@ -150,13 +155,12 @@ public class MainTableController extends SubscriberController<Boolean> {
 							TableColumn column = selectedCell.getTableColumn();
 							int rowIndex = selectedCell.getRow();
 							selectedCellData = (String) column.getCellObservableValue(rowIndex).getValue();
+							
 						}
 					});
 					mouseEvent.consume();
 				}
 			});
-
-			// selectedCells = tableView.getSelectionModel().getSelectedCells();
 
 			tableView.setOnDragDetected(new EventHandler<MouseEvent>() {
 				public void handle(MouseEvent event) {
@@ -207,6 +211,9 @@ public class MainTableController extends SubscriberController<Boolean> {
 				tableColumn.setResizable(false);
 				tableColumn.setSortable(false);
 				tableColumn.setPrefWidth(150.0);
+				
+				tableColumn.setCellValueFactory(new PropertyValueFactory<>("default"));
+
 				tableColumn.setCellValueFactory(param -> {
 					for (TimetableAssignment assignment : param.getValue().getAssignments()) {
 						if (assignment.getRoom().getId().equals(param.getTableColumn().getId())) {
@@ -215,6 +222,7 @@ public class MainTableController extends SubscriberController<Boolean> {
 					}
 					return new SimpleStringProperty("");
 				});
+				
 				tableView.getColumns().add(tableColumn);
 			}
 		}
