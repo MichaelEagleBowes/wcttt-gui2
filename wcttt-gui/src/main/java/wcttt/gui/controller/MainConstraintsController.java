@@ -15,6 +15,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.layout.VBox;
@@ -34,22 +35,39 @@ public class MainConstraintsController extends Controller {
 	
 	@FXML
 	private Button violationsButton; // shows the penalty change from constraint violations if switched
-	
 	@FXML
-	private ListView<String> listView; // displays max. 2 assignments to be swapped.
-	private Set<String> stringSet;
+	private VBox vbox = new VBox(); // displays max. 2 assignments to be swapped.
 	private ObservableList<String> assgnmtList = FXCollections.observableArrayList();
-	
-	private Text assgnmt1, assgnmt2;
+	ListView<String> view;
 	
 	@FXML
 	protected void initialize() {
-		listView = new ListView<String>();
-		ObservableList<String> items = listView.getItems();
-        items.add("One");
-        items.add("Two");
-        //assgnmtList.setAll(stringSet);
-        //listView.setItems(assgnmtList);
+		view = new ListView<String>();
+		vbox.setPrefWidth(200);
+		vbox.setPrefHeight(70);
+		assgnmtList = FXCollections.observableArrayList ("None");
+		view.setItems(assgnmtList);
+		vbox.getChildren().add(view);
+		
+		vbox.setOnDragDropped(new EventHandler<DragEvent>() {
+		    @Override
+			public void handle(DragEvent event) {
+		        /* data dropped */
+		        /* if there is a string data on dragboard, read it and use it */
+		        Dragboard db = event.getDragboard();
+		        boolean success = false;
+		        if (db.hasString()) {
+		        	//add text to textfield
+		           success = true;
+		        }
+		        /* let the source know whether the string was successfully 
+		         * transferred and used */
+		        event.setDropCompleted(success);
+		        
+		        event.consume();
+		     }
+		});
+
         /*
         listView.setCellFactory(new Callback<ListView<String>, javafx.scene.control.ListCell<String>>()
         {
@@ -61,7 +79,7 @@ public class MainConstraintsController extends Controller {
         });*/
 		
 		swapButton.setOnAction(event -> {
-			
+			getMainController().getTimetableTableController().getSelectedData();
 		});
 
 		violationsButton.setOnAction(event -> {
@@ -80,24 +98,22 @@ public class MainConstraintsController extends Controller {
 	 * Adds an assignment's data for the purpose of swapping them with another assignment.
 	 * In case the assignment list is full (max. 2), the assignment that was added first is swapped out.
 	 */
-	private void addAssignment(TimetableAssignment assign) {
-		/*
+	public void updateListView(String s) {
+		//view.setItems(assgnmtList);
+		
+		
 		if(assgnmtList.size()==2) {
 			assgnmtList.remove(0);
-			assgnmtList.add(0, assign);
+			assgnmtList.add(s);
 		} else {
-			assgnmtList.add(assign);
+			assgnmtList.add(s);
 		}
-		*/
-	}
-	
-	private void createSwapBox() {
 		
 	}
 
 	private void updateGui() {
 		Platform.runLater(() -> {
-			createSwapBox();
+			
 		});
 	}
 }

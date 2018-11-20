@@ -24,9 +24,9 @@
 
 package wcttt.gui;
 
-import wcttt.gui.controller.MainController;
 import wcttt.gui.model.Model;
 import wcttt.gui.model.ModelImpl;
+import wcttt.gui.controller.MainController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

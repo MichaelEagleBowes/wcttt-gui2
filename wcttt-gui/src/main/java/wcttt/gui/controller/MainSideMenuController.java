@@ -65,8 +65,6 @@ public class MainSideMenuController extends Controller {
 	private ToggleButton timetablesToggle;
 	@FXML
 	private ToggleButton filtersToggle;
-	
-	private ListView<String> listView; // displays max. 2 assignments to be swapped.
 
 	@FXML
 	protected void initialize() {
@@ -109,6 +107,10 @@ public class MainSideMenuController extends Controller {
 
 	MainTimetablesController getTimetablesController() {
 		return timetablesController;
+	}
+	
+	MainConstraintsController getConstraintsController() {
+		return constraintsController;
 	}
 
 	MainFiltersController getFiltersController() {

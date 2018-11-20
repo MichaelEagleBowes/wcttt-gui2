@@ -32,35 +32,24 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.DataFormat;
-import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 import wcttt.lib.model.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -74,7 +63,6 @@ public class MainTableController extends SubscriberController<Boolean> {
 	private VBox timetableDaysVBox;
 
 	private List<TableView<TimetablePeriod>> timetableDays = new ArrayList<>();
-	private List<Text> violations = new ArrayList<>();
 	private Timetable selectedTimetable = null;
 	private ObservableList<TablePosition> selectedCells = null;
 	private String selectedCellData = null;
@@ -83,6 +71,8 @@ public class MainTableController extends SubscriberController<Boolean> {
 	private Chair chairFilter = null;
 	private Course courseFilter = null;
 	private Curriculum curriculumFilter = null;
+	
+	private ObservableList<String> selectedData = FXCollections.observableArrayList();
 
 	@Override
 	public void setup(Stage stage, HostServices hostServices, MainController mainController, Model model) {
@@ -102,19 +92,21 @@ public class MainTableController extends SubscriberController<Boolean> {
 	}
 
 	private void updateGui() {
+		System.out.println("update GUI");
 		createTableViews();
-		//Text assgnmt1, assgnmt2;
-		//box.getChildren().setAll(violations);
 		timetableDaysVBox.getChildren().setAll(timetableDays);
 		createPeriodColumns();
 		createRoomColumns(getModel().getInternalRooms());
 		createRoomColumns(getModel().getExternalRooms());
 		if (selectedTimetable != null) {
+			System.out.println("create tables");
 			setTimetable(selectedTimetable);
 		}
 	}
 	
-	
+	public ObservableList<String> getSelectedData(){
+		return selectedData;
+	}
 
 	private void createTableViews() {
 		timetableDays.clear();
@@ -133,6 +125,35 @@ public class MainTableController extends SubscriberController<Boolean> {
 			tableColumn.setPrefWidth(100.0);
 			tableView.getColumns().add(tableColumn);
 
+			tableView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+				
+				void sendDataToConstraintController(){
+					if(selectedData != null) {
+						System.out.println("selected: "+selectedCellData);
+						getMainController().getSideMenuController().getConstraintsController().updateListView(selectedCellData);
+					}
+				}
+				
+				@Override
+				public void handle(MouseEvent mouseEvent) {
+					selectedCells = tableView.getSelectionModel().getSelectedCells();
+					if(selectedCells != null) {
+							if (selectedCells.size() > 0) {
+								selectedCell = selectedCells.get(0);
+								TableColumn column = selectedCell.getTableColumn();
+								int rowIndex = selectedCell.getRow();
+								selectedCellData = (String) column.getCellObservableValue(rowIndex).getValue();
+								if(selectedData.size()>0) {
+									selectedData.remove(0);
+								}
+								selectedData.add(0, selectedCellData);
+								sendDataToConstraintController();
+							}
+					}
+					mouseEvent.consume();
+				}
+			});
+			
 			// Handles the individual Cells in the tableViews
 			tableView.setOnMouseEntered(new EventHandler<MouseEvent>() {
 				@Override
@@ -144,7 +165,6 @@ public class MainTableController extends SubscriberController<Boolean> {
 							TableColumn column = selectedCell.getTableColumn();
 							int rowIndex = selectedCell.getRow();
 							selectedCellData = (String) column.getCellObservableValue(rowIndex).getValue();
-							
 						}
 					});
 					mouseEvent.consume();
@@ -152,6 +172,7 @@ public class MainTableController extends SubscriberController<Boolean> {
 			});
 
 			tableView.setOnDragDetected(new EventHandler<MouseEvent>() {
+				@Override
 				public void handle(MouseEvent event) {
 					Dragboard db = tableView.startDragAndDrop(TransferMode.ANY);
 
