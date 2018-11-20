@@ -68,8 +68,8 @@
         </columnConstraints>
          <children>
               <Button fx:id="resetButton" mnemonicParsing="false" prefWidth="80.0" text="Reset" textFill="#c90000" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-              <Button fx:id="filterButton" mnemonicParsing="false" prefWidth="80.0" text="Filter" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-         </children>
+              <Button fx:id="filterButton" mnemonicParsing="false" prefWidth="80.0" text="Filter" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+		 </children>
          <VBox.margin>
             <Insets bottom="15.0" top="15.0" />
          </VBox.margin>
@@ -77,6 +77,7 @@
             <RowConstraints />
             <RowConstraints />
          </rowConstraints>
+		 
       </GridPane>
    </children>
 </VBox>

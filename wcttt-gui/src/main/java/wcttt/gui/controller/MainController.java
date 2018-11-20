@@ -43,8 +43,6 @@ public class MainController extends Controller {
 	@FXML
 	private MainSideMenuController sideMenuController;
 	@FXML
-	private MainConstraintsController constraintsController;
-	@FXML
 	private MainTableController timetableTableController;
 	@FXML
 	private Label stateInfo;
@@ -57,7 +55,6 @@ public class MainController extends Controller {
 		setCloseConfirmation();
 		menuBarController.setup(stage, hostServices, this, model);
 		sideMenuController.setup(stage, hostServices, this, model);
-		constraintsController.setup(stage, hostServices, this, model);
 		timetableTableController.setup(stage, hostServices, this, model);
 		getModel().getStateTextProperty().addListener(
 				(observable, oldValue, newValue) -> updateStateInfo(newValue));
@@ -69,10 +66,6 @@ public class MainController extends Controller {
 
 	MainSideMenuController getSideMenuController() {
 		return sideMenuController;
-	}
-	
-	MainConstraintsController getConstraintsController() {
-		return constraintsController;
 	}
 
 	MainTableController getTimetableTableController() {

@@ -36,17 +36,22 @@
     <children>
         <VBox HBox.hgrow="ALWAYS">
             <children>
-                <ToolBar nodeOrientation="RIGHT_TO_LEFT" orientation="VERTICAL" prefWidth="41.0" VBox.vgrow="ALWAYS" />
-            <ToolBar nodeOrientation="RIGHT_TO_LEFT" orientation="VERTICAL" prefHeight="218.0" prefWidth="41.0">
+            <ToolBar nodeOrientation="RIGHT_TO_LEFT" orientation="VERTICAL" prefWidth="110.0" VBox.vgrow="ALWAYS" />
+            <ToolBar nodeOrientation="RIGHT_TO_LEFT" orientation="VERTICAL" prefHeight="218.0" prefWidth="110.0">
                <items>
-                  <Group>
+			   	  <Group>
                      <children>
-                        <ToggleButton fx:id="timetablesToggle" mnemonicParsing="false" prefWidth="100.0" rotate="90.0" selected="true" text="Timetables" />
+                        <ToggleButton fx:id="swapToggle" mnemonicParsing="false" prefWidth="90.0" selected="true" text="Swap" />
                      </children>
                   </Group>
-                  <Group layoutX="10.0" layoutY="25.0">
+                  <Group>
                      <children>
-                        <ToggleButton fx:id="filtersToggle" mnemonicParsing="false" prefWidth="100.0" rotate="90.0" selected="true" text="Filters" />
+                        <ToggleButton fx:id="timetablesToggle" mnemonicParsing="false" prefWidth="90.0" selected="true" text="Timetables" />
+                     </children>
+                  </Group>
+                  <Group>
+                     <children>
+                        <ToggleButton fx:id="filtersToggle" mnemonicParsing="false" prefWidth="90.0" selected="true" text="Filters" />
                      </children>
                   </Group>
                </items>
@@ -61,6 +66,7 @@
                   <Insets bottom="5.0" />
                </VBox.margin></Separator>
                 <fx:include fx:id="filters" source="main-filters.fxml" />
+				<fx:include fx:id="constraints" source="main-constraints.fxml" />
             </children>
             <padding>
                 <Insets top="5.0" />

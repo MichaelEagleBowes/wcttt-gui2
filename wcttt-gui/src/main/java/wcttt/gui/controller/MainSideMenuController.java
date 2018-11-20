@@ -25,8 +25,11 @@
 package wcttt.gui.controller;
 
 import javafx.application.HostServices;
+import javafx.collections.ObservableList;
 import wcttt.gui.model.Model;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.scene.control.ListView;
 import javafx.scene.control.Separator;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.GridPane;
@@ -43,6 +46,8 @@ public class MainSideMenuController extends Controller {
 	private MainTimetablesController timetablesController;
 	@FXML
 	private MainFiltersController filtersController;
+	@FXML
+	private MainConstraintsController constraintsController;
 
 	@FXML
 	private VBox sideMenuVBox;
@@ -53,10 +58,15 @@ public class MainSideMenuController extends Controller {
 	@FXML
 	private VBox filters;
 	@FXML
+	private VBox constraints;
+	@FXML
+	private ToggleButton swapToggle;
+	@FXML
 	private ToggleButton timetablesToggle;
 	@FXML
 	private ToggleButton filtersToggle;
-
+	
+	private ListView<String> listView; // displays max. 2 assignments to be swapped.
 
 	@FXML
 	protected void initialize() {
@@ -65,6 +75,15 @@ public class MainSideMenuController extends Controller {
 				sideMenuVBox.getChildren().add(0, timetables);
 			} else {
 				sideMenuVBox.getChildren().remove(timetables);
+			}
+			adjustSideMenuSeparators();
+		});
+		
+		swapToggle.setOnAction(event -> {
+			if (swapToggle.isSelected()) {
+				sideMenuVBox.getChildren().add(constraints);
+			} else {
+				sideMenuVBox.getChildren().remove(constraints);
 			}
 			adjustSideMenuSeparators();
 		});
@@ -85,6 +104,7 @@ public class MainSideMenuController extends Controller {
 		super.setup(stage, hostServices, mainController, model);
 		timetablesController.setup(stage, hostServices, mainController, model);
 		filtersController.setup(stage, hostServices, mainController, model);
+		constraintsController.setup(stage, hostServices, mainController, model);
 	}
 
 	MainTimetablesController getTimetablesController() {
@@ -97,6 +117,7 @@ public class MainSideMenuController extends Controller {
 
 	private void adjustSideMenuSeparators() {
 		if(!sideMenuVBox.getChildren().contains(sideMenuVBoxSeparator) &&
+				sideMenuVBox.getChildren().contains(constraints) &&
 				sideMenuVBox.getChildren().contains(timetables) &&
 				sideMenuVBox.getChildren().contains(filters)) {
 			sideMenuVBox.getChildren().add(1, sideMenuVBoxSeparator);

@@ -69,9 +69,6 @@ import java.util.stream.Collectors;
  * Controller for the tables that contain the selected timetable.
  */
 public class MainTableController extends SubscriberController<Boolean> {
-
-	@FXML
-	private VBox box;
 	
 	@FXML
 	private VBox timetableDaysVBox;
@@ -106,17 +103,9 @@ public class MainTableController extends SubscriberController<Boolean> {
 
 	private void updateGui() {
 		createTableViews();
-		Button swapButton = new Button("Swap"); // swaps 2 assignments
-		Button violationsButton = new Button("Show Penalty"); // shows the penalty change from constraint violations if switched
-		box.setVgrow(swapButton, Priority.ALWAYS);
-	    box.setVgrow(violationsButton, Priority.ALWAYS);
-	    swapButton.setMaxWidth(Double.MAX_VALUE);
-	    violationsButton.setMaxWidth(Double.MAX_VALUE);
 		//Text assgnmt1, assgnmt2;
-		box.getChildren().addAll(swapButton, violationsButton);
 		//box.getChildren().setAll(violations);
 		timetableDaysVBox.getChildren().setAll(timetableDays);
-		timetableDaysVBox.getChildren().add(swapButton);
 		createPeriodColumns();
 		createRoomColumns(getModel().getInternalRooms());
 		createRoomColumns(getModel().getExternalRooms());
