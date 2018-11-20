@@ -140,6 +140,10 @@ public class MainConstraintsController extends Controller {
 			break;
 		}
 		
+		if(s == "") {
+			s = "Free Slot";
+		}
+		
 		String assgnmtTxt = dayString + ", " + slotString + ", " + s +", " + room.getName();
 		
 		System.out.println(room.getName());
